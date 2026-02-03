@@ -1,80 +1,71 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: "Conceptual foundation"
 ---
 
-## Get started in three steps
+This document establishes the constitution of the system. We assume these core truths to be self-evident. They are not guidelines; they are the physics of our world.
 
-Get your documentation site running locally and make your first customization.
+**Key terminology**
 
-### Step 1: Set up your local environment
+| Term     | Definition                                                                                    |
+| :------- | :-------------------------------------------------------------------------------------------- |
+| Layer    | A stratified level of authority. No layer may answer questions belonging to a layer below it. |
+| Engine   | A bounded unit of responsibility and logic. The "worker" that operates within a layer.        |
+| Task     | A request for reasoning or action. Flows downward. Immutable once created.                    |
+| Artifact | A record of a decision or outcome. Flows upward. Append-only and authoritative.               |
+| Intent   | A declaration of a desired outcome without asserting how it is achieved.                      |
+| Reality  | The authoritative record of physical truth (e.g., inventory, sensor data).                    |
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+### The layered control model
 
-### Step 2: Deploy your changes
+The system operates as a stratified control architecture rather than a linear pipeline. Its primary function is to absorb complexity downward while preserving clarity upward. This structure ensures that high-level goals are decoupled from the specific mechanisms used to achieve them.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+**Canonical layers**
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+| Layer                | Responsibility            | Authority boundary                                          |
+| :------------------- | :------------------------ | :---------------------------------------------------------- |
+| Intention            | Goal formulation.         | Desired Outcomes. May not assert physical state or success. |
+| Decision             | Reasoning & optimization. | Trade-offs. May not mutate reality.                         |
+| Policy               | Rules & invariants.       | Permissions. May not execute.                               |
+| Execution            | Application to reality.   | Reality. Sole authority to mutate physical state.           |
+| Physical Abstraction | Digital representation.   | Representation. Translates logic to physical entities.      |
+| State & Reality      | Ground truth & history.   | Truth. The record of what actually happened.                |
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+Control flows through a strict two-step handshake. **intent flows downward**, transforming abstract goals into concrete requests, while **truth flows upward**, reporting observed reality as feedback. Crucially, no layer is permitted to answer questions or make decisions that belong to a layer below it.
 
-### Step 3: Go live
+### Authority and Invariant Ownership
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+Authority is explicit, bounded, and exclusive. Every decision, whether to move a pallet, reserve stock, or reject an order, belongs to exactly one layer. This prevents authority leakage, where business logic accidentally migrates into user interfaces or database triggers.
 
-## Next steps
+Invariants are the enforcement mechanism of this authority. Specific layers own specific rules. When a conflict arises, it is resolved structurally rather than by priority: lower layers override higher layers only through the authority of truth (e.g., "physically, this item is missing"), forcing the higher layer to replan.
 
-Now that you have your docs running, explore these key features:
+### The functional units of control
 
-<CardGroup cols={2}>
+An engine is a bounded authority agent, a service wrapper around a specific domain of authority. Unlike a generic microservice, an engine is defined by what it is allowed to decide. It depends downward on capabilities and domains, never upward on APIs or controllers.
 
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
+Engines operate as isolated, stateless units of responsibility. They assume concurrent execution and do not share memory or mutable global state. An engine’s lifecycle is defined by its task: it accepts an input, processes it within its authority boundary, and produces an output (an artifact) or a failure signal.
 
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
+### Communication and the artifact protocol
 
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
+The system coordinates itself through a strict protocol of tasks and artifacts rather than synchronous function calls. This creates a durable audit trail and decouples reasoning from timing.
 
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
+A task represents a request for control; it is immutable and valid regardless of whether it can be immediately executed. An artifact represents a record of truth, a decision made, an action taken, or an outcome observed. Artifacts are append-only and must trace their lineage back to the inputs that generated them.
 
-</CardGroup>
+### State, persistence, and write authority
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+Storage is not a shared resource; it is a controlled write surface aligned with engine authority. The database enforces the architecture by restricting which components can mutate specific data.
+
+Write authority follows execution. Only **Execution Engines** (or their hardware proxies) hold the authority to perform irreversible writes, such as mutating inventory counts or confirming shipments. Decision engines are restricted to writing **plans** (artifacts) and derived state, never the state of reality itself.
+
+### Time, causality, and ordering
+
+The system relies on causality rather than wall-clock time to ensure correctness. Because components operate asynchronously, arrival order is never assumed to equal execution order.
+
+Correctness is established through lineage. If artifact B depends on artifact A, then A is the causal predecessor, regardless of when the messages arrived. Engines treat unordered artifacts as concurrent and rely on idempotency to handle duplicate signals safely.
+
+### The boundary of intent (ingress)
+
+The system interacts with the outside world through a strict intent \*\*\*\*ingress boundary. APIs and resolvers serve a single purpose: to validate and register intent. They are strictly forbidden from performing reasoning, reserving capacity, or inspecting physical reality.
+
+When an external actor submits a request, the API’s response indicates acceptance, meaning the system has taken responsibility for the intent. It does not imply immediate success or execution.
+
+These are the core truths we assume about the system, and everything else follows from them.
