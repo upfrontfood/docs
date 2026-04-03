@@ -6,14 +6,14 @@ This document establishes the constitution of the system. We assume these core t
 
 **Key terminology**
 
-| Term     | Definition                                                                                    |
-| :------- | :-------------------------------------------------------------------------------------------- |
-| Layer    | A stratified level of authority. No layer may answer questions belonging to a layer below it. |
-| Engine   | A bounded unit of responsibility and logic. The "worker" that operates within a layer.        |
-| Task     | A request for reasoning or action. Flows downward. Immutable once created.                    |
-| Artifact | A record of a decision or outcome. Flows upward. Append-only and authoritative.               |
-| Intent   | A declaration of a desired outcome without asserting how it is achieved.                      |
-| Reality  | The authoritative record of physical truth (e.g., inventory, sensor data).                    |
+| Term | Definition |
+| :-- | :-- |
+| Layer | A stratified level of authority. No layer may answer questions belonging to a layer below it. |
+| Engine | A bounded unit of responsibility and logic. The "worker" that operates within a layer. |
+| Task | A request for reasoning or action. Flows downward. Immutable once created. |
+| Artifact | A record of a decision or outcome. Flows upward. Append-only and authoritative. |
+| Intent | A declaration of a desired outcome without asserting how it is achieved. |
+| Reality | The authoritative record of physical truth (e.g., inventory, sensor data). |
 
 ### The layered control model
 
@@ -21,14 +21,14 @@ The system operates as a stratified control architecture rather than a linear pi
 
 **Canonical layers**
 
-| Layer                | Responsibility            | Authority boundary                                          |
-| :------------------- | :------------------------ | :---------------------------------------------------------- |
-| Intention            | Goal formulation.         | Desired Outcomes. May not assert physical state or success. |
-| Decision             | Reasoning & optimization. | Trade-offs. May not mutate reality.                         |
-| Policy               | Rules & invariants.       | Permissions. May not execute.                               |
-| Execution            | Application to reality.   | Reality. Sole authority to mutate physical state.           |
-| Physical Abstraction | Digital representation.   | Representation. Translates logic to physical entities.      |
-| State & Reality      | Ground truth & history.   | Truth. The record of what actually happened.                |
+| Layer | Responsibility | Authority boundary |
+| :-- | :-- | :-- |
+| Intention | Goal formulation. | Desired Outcomes. May not assert physical state or success. |
+| Decision | Reasoning & optimization. | Trade-offs. May not mutate reality. |
+| Policy | Rules & invariants. | Permissions. May not execute. |
+| Execution | Application to reality. | Reality. Sole authority to mutate physical state. |
+| Physical Abstraction | Digital representation. | Representation. Translates logic to physical entities. |
+| State & Reality | Ground truth & history. | Truth. The record of what actually happened. |
 
 Control flows through a strict two-step handshake. **intent flows downward**, transforming abstract goals into concrete requests, while **truth flows upward**, reporting observed reality as feedback. Crucially, no layer is permitted to answer questions or make decisions that belong to a layer below it.
 
@@ -64,7 +64,7 @@ Correctness is established through lineage. If artifact B depends on artifact A,
 
 ### The boundary of intent (ingress)
 
-The system interacts with the outside world through a strict intent \*\*\*\*ingress boundary. APIs and resolvers serve a single purpose: to validate and register intent. They are strictly forbidden from performing reasoning, reserving capacity, or inspecting physical reality.
+The system interacts with the outside world through a strict intent ingress boundary. APIs and resolvers serve a single purpose: to validate and register intent. They are strictly forbidden from performing reasoning, reserving capacity, or inspecting physical reality.
 
 When an external actor submits a request, the API’s response indicates acceptance, meaning the system has taken responsibility for the intent. It does not imply immediate success or execution.
 
